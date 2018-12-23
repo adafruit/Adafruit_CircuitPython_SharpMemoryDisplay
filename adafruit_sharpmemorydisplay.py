@@ -34,7 +34,7 @@ Implementation Notes
 
 **Hardware:**
 
-* `Adafruit SHARP Memory Display Breakout - 1.3 inch 168x144 Monochrome <https://www.adafruit.com/product/3502>`_
+* `Adafruit SHARP Memory Display Breakout - 1.3 inch 144x168 Monochrome <https://www.adafruit.com/product/3502>`_
 
 * `Adafruit SHARP Memory Display Breakout - 1.3 inch 96x96 Monochrome <https://www.adafruit.com/product/1393>`_
 
