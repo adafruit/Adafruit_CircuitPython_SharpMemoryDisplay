@@ -66,7 +66,7 @@ def reverse_bit(num):
     return result
 
 
-class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
+class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer1):
     """A driver for sharp memory displays, you can use any size but the
     full display must be buffered in memory!"""
     # pylint: disable=too-many-instance-attributes
