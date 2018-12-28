@@ -9,8 +9,8 @@ Introduction
     :target: https://discord.gg/nBQh6qu
     :alt: Discord
 
-.. image:: https://travis-ci.com/adafruit/Adafruit_CircuitPython_SHARPMemoryDisplay.svg?branch=master
-    :target: https://travis-ci.com/adafruit/Adafruit_CircuitPython_SHARPMemoryDisplay
+.. image:: https://travis-ci.com/adafruit/Adafruit_CircuitPython_SharpMemoryDisplay.svg?branch=master
+    :target: https://travis-ci.com/adafruit/Adafruit_CircuitPython_SharpMemoryDisplay
     :alt: Build Status
 
 A display control library for Sharp 'memory' displays
@@ -24,6 +24,31 @@ This driver depends on:
 Please ensure all dependencies are available on the CircuitPython filesystem.
 This is easily achieved by downloading
 `the Adafruit library and driver bundle <https://github.com/adafruit/Adafruit_CircuitPython_Bundle>`_.
+
+Installing from PyPI
+--------------------
+
+On supported GNU/Linux systems like the Raspberry Pi, you can install the driver locally `from
+PyPI <https://pypi.org/project/adafruit-circuitpython-sharpmemorydisplay/>`_. To install for current user:
+
+.. code-block:: shell
+
+    pip3 install adafruit-circuitpython-sharpmemorydisplay
+
+To install system-wide (this may be required in some cases):
+
+.. code-block:: shell
+
+    sudo pip3 install adafruit-circuitpython-sharpmemorydisplay
+
+To install in a virtual environment in your current project:
+
+.. code-block:: shell
+
+    mkdir project-name && cd project-name
+    python3 -m venv .env
+    source .env/bin/activate
+    pip3 install adafruit-circuitpython-sharpmemorydisplay
 
 Usage Example
 =============
