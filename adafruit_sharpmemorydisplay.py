@@ -72,7 +72,7 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
     full display must be buffered in memory!"""
     # pylint: disable=too-many-instance-attributes,abstract-method
 
-    def __init__(self, spi, scs_pin, width, height, *, baudrate=16000000):
+    def __init__(self, spi, scs_pin, width, height, *, baudrate=8000000):
         self._scs_pin = scs_pin
         scs_pin.switch_to_output(value=True)
         self._baudrate = baudrate
