@@ -10,8 +10,8 @@ spi = busio.SPI(board.SCK, MOSI=board.MOSI)
 scs = digitalio.DigitalInOut(board.D6) # inverted chip select
 
 # pass in the display size, width and height, as well
-display = adafruit_sharpmemorydisplay.SharpMemoryDisplay(spi, scs, 96, 96)
-# display = adafruit_sharpmemorydisplay.SharpMemoryDisplay(spi, scs, 144, 168)
+# display = adafruit_sharpmemorydisplay.SharpMemoryDisplay(spi, scs, 96, 96)
+display = adafruit_sharpmemorydisplay.SharpMemoryDisplay(spi, scs, 144, 168)
 
 print("Pixel test")
 
@@ -27,7 +27,7 @@ display.pixel(display.width//2, display.width//2, 0)
 # Set a pixel in the opposite corner position.
 display.pixel(display.width-1, display.height-1, 0)
 display.show()
-time.sleep(0.1)
+time.sleep(2)
 
 print("Lines test")
 # we'll draw from corner to corner, lets define all the pair coordinates here
@@ -40,7 +40,7 @@ for corner_from in corners:
         display.line(corner_from[0], corner_from[1],
                      corner_to[0], corner_to[1], 0)
 display.show()
-time.sleep(0.1)
+time.sleep(2)
 
 print("Rectangle test")
 display.fill(1)
@@ -49,7 +49,7 @@ h_delta = display.height / 10
 for i in range(11):
     display.rect(0, 0, int(w_delta*i), int(h_delta*i), 0)
 display.show()
-time.sleep(0.1)
+time.sleep(2)
 
 print("Text test")
 display.fill(1)
