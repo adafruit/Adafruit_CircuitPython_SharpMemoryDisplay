@@ -56,13 +56,14 @@ _SHARPMEM_BIT_WRITECMD = const(0x80)  # in lsb
 _SHARPMEM_BIT_VCOM = const(0x40)  # in lsb
 _SHARPMEM_BIT_CLEAR = const(0x20)  # in lsb
 
+
 def reverse_bit(num):
     """Turn an LSB byte to an MSB byte, and vice versa. Used for SPI as
     it is LSB for the SHARP, but 99% of SPI implementations are MSB only!"""
     result = 0
     for _ in range(8):
         result <<= 1
-        result += (num & 1)
+        result += num & 1
         num >>= 1
     return result
 
@@ -70,6 +71,7 @@ def reverse_bit(num):
 class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
     """A driver for sharp memory displays, you can use any size but the
     full display must be buffered in memory!"""
+
     # pylint: disable=too-many-instance-attributes,abstract-method
 
     def __init__(self, spi, scs_pin, width, height, *, baudrate=8000000):
@@ -108,11 +110,11 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
         self._spi.write(self._buf)
 
         slice_from = 0
-        line_len = self.width//8
+        line_len = self.width // 8
         for line in range(self.height):
-            self._buf[0] = reverse_bit(line+1)
+            self._buf[0] = reverse_bit(line + 1)
             self._spi.write(self._buf)
-            self._spi.write(memoryview(self.buffer[slice_from:slice_from+line_len]))
+            self._spi.write(memoryview(self.buffer[slice_from : slice_from + line_len]))
             slice_from += line_len
             self._buf[0] = 0
             self._spi.write(self._buf)
