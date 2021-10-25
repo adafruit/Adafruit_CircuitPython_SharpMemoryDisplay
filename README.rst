@@ -55,6 +55,11 @@ Usage Example
 
 See the examples folder for a demonstration of drawing pixels, lines and text
 
+Documentation
+=============
+
+API documentation for this library can be found on `Read the Docs <https://circuitpython.readthedocs.io/projects/sharpmemorydisplay/en/latest/>`_.
+
 Contributing
 ============
 
