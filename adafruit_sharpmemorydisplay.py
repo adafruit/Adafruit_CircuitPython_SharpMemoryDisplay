@@ -128,9 +128,11 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
                     width, height
                 )
             )
-        
+
         if numpy:
-            self.buffer = bytearray(numpy.packbits(numpy.asarray(img), axis=1).flatten().tolist())
+            self.buffer = bytearray(
+                numpy.packbits(numpy.asarray(img), axis=1).flatten().tolist()
+            )
         else:
             # Grab all the pixels from the image, faster than getpixel.
             pixels = img.load()
@@ -144,5 +146,3 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
                         self.pixel(x, y, pixels[(x, y)])
                     elif pixels[(x, y)]:
                         self.pixel(x, y, 1)  # only write if pixel is true
-
-
