@@ -31,6 +31,11 @@ Implementation Notes
 from micropython import const
 import adafruit_framebuf
 
+try:
+    import numpy
+except ImportError:
+    numpy = None
+
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_SharpMemoryDisplay.git"
 
@@ -103,3 +108,41 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
         self._spi.write(self._buf)  # we send one last 0 byte
         self._scs_pin.value = False
         self._spi.unlock()
+
+    def image(self, img):
+        """Set buffer to value of Python Imaging Library image.  The image should
+        be in 1 bit mode and a size equal to the display size."""
+        # determine our effective width/height, taking rotation into account
+        width = self.width
+        height = self.height
+        if self.rotation in (1, 3):
+            width, height = height, width
+
+        if img.mode != "1":
+            raise ValueError("Image must be in mode 1.")
+
+        imwidth, imheight = img.size
+        if imwidth != width or imheight != height:
+            raise ValueError(
+                "Image must be same dimensions as display ({0}x{1}).".format(
+                    width, height
+                )
+            )
+        
+        if numpy:
+            self.buffer = bytearray(numpy.packbits(numpy.asarray(img), axis=1).flatten().tolist())
+        else:
+            # Grab all the pixels from the image, faster than getpixel.
+            pixels = img.load()
+            # Clear buffer
+            for i in range(len(self.buf)):  # pylint: disable=consider-using-enumerate
+                self.buf[i] = 0
+            # Iterate through the pixels
+            for x in range(width):  # yes this double loop is slow,
+                for y in range(height):  #  but these displays are small!
+                    if img.mode == "RGB":
+                        self.pixel(x, y, pixels[(x, y)])
+                    elif pixels[(x, y)]:
+                        self.pixel(x, y, 1)  # only write if pixel is true
+
+
