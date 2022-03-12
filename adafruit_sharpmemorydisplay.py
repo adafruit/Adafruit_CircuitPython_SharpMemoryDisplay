@@ -30,6 +30,7 @@ Implementation Notes
 
 from micropython import const
 import adafruit_framebuf
+from adafruit_bus_device.spi_device import SPIDevice
 
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_SharpMemoryDisplay.git"
@@ -57,11 +58,10 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
     # pylint: disable=too-many-instance-attributes,abstract-method
 
     def __init__(self, spi, scs_pin, width, height, *, baudrate=2000000):
-        self._scs_pin = scs_pin
         scs_pin.switch_to_output(value=True)
-        self._baudrate = baudrate
-        # The SCS pin is active HIGH so we can't use bus_device. exciting!
-        self._spi = spi
+        self.spi_device = SPIDevice(
+            spi, scs_pin, cs_active_value=True, baudrate=baudrate
+        )
         # prealloc for when we write the display
         self._buf = bytearray(1)
 
@@ -75,31 +75,25 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
 
     def show(self):
         """write out the frame buffer via SPI, we use MSB SPI only so some
-        bit-swapping is rquired. The display also uses inverted CS for some
+        bit-swapping is required. The display also uses inverted CS for some
         reason so we con't use bus_device"""
 
-        # CS pin is inverted so we have to do this all by hand
-        while not self._spi.try_lock():
-            pass
-        self._spi.configure(baudrate=self._baudrate)
-        self._scs_pin.value = True
+        with self.spi_device as spi:
 
-        # toggle the VCOM bit
-        self._buf[0] = _SHARPMEM_BIT_WRITECMD
-        if self._vcom:
-            self._buf[0] |= _SHARPMEM_BIT_VCOM
-        self._vcom = not self._vcom
-        self._spi.write(self._buf)
+            # toggle the VCOM bit
+            self._buf[0] = _SHARPMEM_BIT_WRITECMD
+            if self._vcom:
+                self._buf[0] |= _SHARPMEM_BIT_VCOM
+            self._vcom = not self._vcom
+            spi.write(self._buf)
 
-        slice_from = 0
-        line_len = self.width // 8
-        for line in range(self.height):
-            self._buf[0] = reverse_bit(line + 1)
-            self._spi.write(self._buf)
-            self._spi.write(memoryview(self.buffer[slice_from : slice_from + line_len]))
-            slice_from += line_len
-            self._buf[0] = 0
-            self._spi.write(self._buf)
-        self._spi.write(self._buf)  # we send one last 0 byte
-        self._scs_pin.value = False
-        self._spi.unlock()
+            slice_from = 0
+            line_len = self.width // 8
+            for line in range(self.height):
+                self._buf[0] = reverse_bit(line + 1)
+                spi.write(self._buf)
+                spi.write(memoryview(self.buffer[slice_from : slice_from + line_len]))
+                slice_from += line_len
+                self._buf[0] = 0
+                spi.write(self._buf)
+            spi.write(self._buf)  # we send one last 0 byte
