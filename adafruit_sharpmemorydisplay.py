@@ -75,8 +75,8 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
 
     def show(self):
         """write out the frame buffer via SPI, we use MSB SPI only so some
-        bit-swapping is required. The display also uses inverted CS for some
-        reason so we con't use bus_device"""
+        bit-swapping is required.
+        """
 
         with self.spi_device as spi:
 
