@@ -37,7 +37,7 @@ try:
 except ImportError:
     numpy = None
 
-__version__ = "0.0.0-auto.0"
+__version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_SharpMemoryDisplay.git"
 
 _SHARPMEM_BIT_WRITECMD = const(0x80)  # in lsb
