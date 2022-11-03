@@ -98,8 +98,7 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
             for line in range(self.height):
                 self._buf[0] = reverse_bit(line + 1)
                 image_buffer.extend(self._buf)
-                image_buffer.extend(
-                    self.buffer[slice_from: slice_from + line_len])
+                image_buffer.extend(self.buffer[slice_from : slice_from + line_len])
                 slice_from += line_len
                 self._buf[0] = 0
                 image_buffer.extend(self._buf)
