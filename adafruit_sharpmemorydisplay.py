@@ -85,26 +85,26 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
 
         with self.spi_device as spi:
 
-            _imageBuf = bytearray()
+            image_buffer = bytearray()
             # toggle the VCOM bit
             self._buf[0] = _SHARPMEM_BIT_WRITECMD
             if self._vcom:
                 self._buf[0] |= _SHARPMEM_BIT_VCOM
             self._vcom = not self._vcom
-            _imageBuf.extend(self._buf)
+            image_buffer.extend(self._buf)
 
             slice_from = 0
             line_len = self.width // 8
             for line in range(self.height):
                 self._buf[0] = reverse_bit(line + 1)
-                _imageBuf.extend(self._buf)
-                _imageBuf.extend(
+                image_buffer.extend(self._buf)
+                image_buffer.extend(
                     self.buffer[slice_from: slice_from + line_len])
                 slice_from += line_len
                 self._buf[0] = 0
-                _imageBuf.extend(self._buf)
-            _imageBuf.extend(self._buf)
-            spi.write(_imageBuf)
+                image_buffer.extend(self._buf)
+            image_buffer.extend(self._buf)
+            spi.write(image_buffer)
 
     def image(self, img):
         """Set buffer to value of Python Imaging Library image.  The image should
