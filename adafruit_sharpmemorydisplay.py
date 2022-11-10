@@ -28,9 +28,9 @@ Implementation Notes
 """
 # pylint: enable=line-too-long
 
-from micropython import const
 import adafruit_framebuf
 from adafruit_bus_device.spi_device import SPIDevice
+from micropython import const
 
 try:
     import numpy
@@ -85,23 +85,25 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
 
         with self.spi_device as spi:
 
+            image_buffer = bytearray()
             # toggle the VCOM bit
             self._buf[0] = _SHARPMEM_BIT_WRITECMD
             if self._vcom:
                 self._buf[0] |= _SHARPMEM_BIT_VCOM
             self._vcom = not self._vcom
-            spi.write(self._buf)
+            image_buffer.extend(self._buf)
 
             slice_from = 0
             line_len = self.width // 8
             for line in range(self.height):
                 self._buf[0] = reverse_bit(line + 1)
-                spi.write(self._buf)
-                spi.write(memoryview(self.buffer[slice_from : slice_from + line_len]))
+                image_buffer.extend(self._buf)
+                image_buffer.extend(self.buffer[slice_from : slice_from + line_len])
                 slice_from += line_len
                 self._buf[0] = 0
-                spi.write(self._buf)
-            spi.write(self._buf)  # we send one last 0 byte
+                image_buffer.extend(self._buf)
+            image_buffer.extend(self._buf)
+            spi.write(image_buffer)
 
     def image(self, img):
         """Set buffer to value of Python Imaging Library image.  The image should
@@ -135,7 +137,7 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
                 self.buf[i] = 0
             # Iterate through the pixels
             for x in range(width):  # yes this double loop is slow,
-                for y in range(height):  #  but these displays are small!
+                for y in range(height):  # but these displays are small!
                     if img.mode == "RGB":
                         self.pixel(x, y, pixels[(x, y)])
                     elif pixels[(x, y)]:
