@@ -27,6 +27,7 @@ Implementation Notes
 
 """
 # pylint: enable=line-too-long
+from __future__ import annotations
 
 import adafruit_framebuf
 from adafruit_bus_device.spi_device import SPIDevice
@@ -71,7 +72,7 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
         width: float,
         height: float,
         *,
-        baudrate=2000000
+        baudrate=2000000,
     ):
         scs_pin.switch_to_output(value=True)
         self.spi_device = SPIDevice(
