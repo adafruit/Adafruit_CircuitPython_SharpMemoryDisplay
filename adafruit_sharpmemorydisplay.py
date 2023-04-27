@@ -27,16 +27,22 @@ Implementation Notes
 
 """
 # pylint: enable=line-too-long
-from __future__ import annotations
+
+
+try:
+    from __future__ import annotations
+    from busio import SPI
+    from digitalio import DigitalInOut
+    from circuitpython_typing.pil import Image
+except ImportError:
+    pass
 
 import adafruit_framebuf
 from adafruit_bus_device.spi_device import SPIDevice
 from micropython import const
 
 try:
-    from PIL import Image
     import numpy
-    from digitalio import DigitalInOut
 except ImportError:
     numpy = None
 
@@ -48,7 +54,7 @@ _SHARPMEM_BIT_VCOM = const(0x40)  # in lsb
 _SHARPMEM_BIT_CLEAR = const(0x20)  # in lsb
 
 
-def reverse_bit(num: float):
+def reverse_bit(num: int) -> int:
     """Turn an LSB byte to an MSB byte, and vice versa. Used for SPI as
     it is LSB for the SHARP, but 99% of SPI implementations are MSB only!"""
     result = 0
@@ -67,10 +73,10 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
 
     def __init__(
         self,
-        spi: SPIDevice,
+        spi: SPI,
         scs_pin: DigitalInOut,
-        width: float,
-        height: float,
+        width: int,
+        height: int,
         *,
         baudrate=2000000,
     ):
@@ -89,7 +95,7 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
         # Set the vcom bit to a defined state
         self._vcom = True
 
-    def show(self):
+    def show(self) -> None:
         """write out the frame buffer via SPI, we use MSB SPI only so some
         bit-swapping is required.
         """
@@ -116,7 +122,7 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
             image_buffer.extend(self._buf)
             spi.write(image_buffer)
 
-    def image(self, img: Image):
+    def image(self, img: Image) -> None:
         """Set buffer to value of Python Imaging Library image.  The image should
         be in 1 bit mode and a size equal to the display size."""
         # determine our effective width/height, taking rotation into account
