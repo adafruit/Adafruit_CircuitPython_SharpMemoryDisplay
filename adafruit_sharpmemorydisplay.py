@@ -27,10 +27,10 @@ Implementation Notes
 
 """
 # pylint: enable=line-too-long
+from __future__ import annotations
 
 
 try:
-    from __future__ import annotations
     from busio import SPI
     from digitalio import DigitalInOut
     from circuitpython_typing.pil import Image
