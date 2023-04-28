@@ -31,6 +31,8 @@ from __future__ import annotations
 
 
 try:
+    # pylint: disable=unused-import
+    import typing
     from busio import SPI
     from digitalio import DigitalInOut
     from circuitpython_typing.pil import Image
