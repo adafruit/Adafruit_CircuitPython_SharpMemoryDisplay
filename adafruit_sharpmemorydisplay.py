@@ -27,6 +27,17 @@ Implementation Notes
 
 """
 # pylint: enable=line-too-long
+from __future__ import annotations
+
+
+try:
+    # pylint: disable=unused-import
+    import typing
+    from busio import SPI
+    from digitalio import DigitalInOut
+    from circuitpython_typing.pil import Image
+except ImportError:
+    pass
 
 import adafruit_framebuf
 from adafruit_bus_device.spi_device import SPIDevice
@@ -45,7 +56,7 @@ _SHARPMEM_BIT_VCOM = const(0x40)  # in lsb
 _SHARPMEM_BIT_CLEAR = const(0x20)  # in lsb
 
 
-def reverse_bit(num):
+def reverse_bit(num: int) -> int:
     """Turn an LSB byte to an MSB byte, and vice versa. Used for SPI as
     it is LSB for the SHARP, but 99% of SPI implementations are MSB only!"""
     result = 0
@@ -62,7 +73,15 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
 
     # pylint: disable=too-many-instance-attributes,abstract-method
 
-    def __init__(self, spi, scs_pin, width, height, *, baudrate=2000000):
+    def __init__(
+        self,
+        spi: SPI,
+        scs_pin: DigitalInOut,
+        width: int,
+        height: int,
+        *,
+        baudrate=2000000,
+    ):
         scs_pin.switch_to_output(value=True)
         self.spi_device = SPIDevice(
             spi, scs_pin, cs_active_value=True, baudrate=baudrate
@@ -78,7 +97,7 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
         # Set the vcom bit to a defined state
         self._vcom = True
 
-    def show(self):
+    def show(self) -> None:
         """write out the frame buffer via SPI, we use MSB SPI only so some
         bit-swapping is required.
         """
@@ -105,7 +124,7 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
             image_buffer.extend(self._buf)
             spi.write(image_buffer)
 
-    def image(self, img):
+    def image(self, img: Image) -> None:
         """Set buffer to value of Python Imaging Library image.  The image should
         be in 1 bit mode and a size equal to the display size."""
         # determine our effective width/height, taking rotation into account
