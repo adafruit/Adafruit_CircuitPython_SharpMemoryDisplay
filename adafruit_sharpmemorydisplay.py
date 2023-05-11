@@ -103,7 +103,6 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
         """
 
         with self.spi_device as spi:
-
             image_buffer = bytearray()
             # toggle the VCOM bit
             self._buf[0] = _SHARPMEM_BIT_WRITECMD
