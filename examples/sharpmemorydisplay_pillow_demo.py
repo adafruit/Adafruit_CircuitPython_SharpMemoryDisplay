@@ -28,6 +28,7 @@ spi = busio.SPI(board.SCK, MOSI=board.MOSI)
 scs = digitalio.DigitalInOut(board.D6)  # inverted chip select
 
 # display = adafruit_sharpmemorydisplay.SharpMemoryDisplay(spi, scs, 96, 96)
+# display = adafruit_sharpmemorydisplay.SharpMemoryDisplay(spi, scs, 400, 240)
 display = adafruit_sharpmemorydisplay.SharpMemoryDisplay(spi, scs, 144, 168)
 
 # Clear display.
@@ -56,7 +57,8 @@ font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", FON
 
 # Draw Some Text
 text = "Hello World!"
-(font_width, font_height) = font.getsize(text)
+bbox = font.getbbox(text)
+(font_width, font_height) = bbox[2] - bbox[0], bbox[3] - bbox[1]
 draw.text(
     (display.width // 2 - font_width // 2, display.height // 2 - font_height // 2),
     text,
