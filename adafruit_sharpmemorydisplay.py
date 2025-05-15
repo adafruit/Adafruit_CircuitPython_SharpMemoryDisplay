@@ -2,7 +2,6 @@
 #
 # SPDX-License-Identifier: MIT
 
-# pylint: disable=line-too-long
 """
 `adafruit_sharpmemorydisplay`
 ====================================================
@@ -26,16 +25,15 @@ Implementation Notes
   https://github.com/adafruit/circuitpython/releases
 
 """
-# pylint: enable=line-too-long
+
 from __future__ import annotations
 
-
 try:
-    # pylint: disable=unused-import
     import typing
+
     from busio import SPI
-    from digitalio import DigitalInOut
     from circuitpython_typing.pil import Image
+    from digitalio import DigitalInOut
 except ImportError:
     pass
 
@@ -71,8 +69,6 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
     """A driver for sharp memory displays, you can use any size but the
     full display must be buffered in memory!"""
 
-    # pylint: disable=too-many-instance-attributes,abstract-method
-
     def __init__(
         self,
         spi: SPI,
@@ -83,9 +79,7 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
         baudrate=2000000,
     ):
         scs_pin.switch_to_output(value=True)
-        self.spi_device = SPIDevice(
-            spi, scs_pin, cs_active_value=True, baudrate=baudrate
-        )
+        self.spi_device = SPIDevice(spi, scs_pin, cs_active_value=True, baudrate=baudrate)
         # prealloc for when we write the display
         self._buf = bytearray(1)
 
@@ -129,7 +123,7 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
         # determine our effective width/height, taking rotation into account
         width = self.width
         height = self.height
-        if self.rotation in (1, 3):
+        if self.rotation in {1, 3}:
             width, height = height, width
 
         if img.mode != "1":
@@ -137,21 +131,15 @@ class SharpMemoryDisplay(adafruit_framebuf.FrameBuffer):
 
         imwidth, imheight = img.size
         if imwidth != width or imheight != height:
-            raise ValueError(
-                "Image must be same dimensions as display ({0}x{1}).".format(
-                    width, height
-                )
-            )
+            raise ValueError(f"Image must be same dimensions as display ({width}x{height}).")
 
         if numpy:
-            self.buffer = bytearray(
-                numpy.packbits(numpy.asarray(img), axis=1).flatten().tolist()
-            )
+            self.buffer = bytearray(numpy.packbits(numpy.asarray(img), axis=1).flatten().tolist())
         else:
             # Grab all the pixels from the image, faster than getpixel.
             pixels = img.load()
             # Clear buffer
-            for i in range(len(self.buf)):  # pylint: disable=consider-using-enumerate
+            for i in range(len(self.buf)):
                 self.buf[i] = 0
             # Iterate through the pixels
             for x in range(width):  # yes this double loop is slow,
